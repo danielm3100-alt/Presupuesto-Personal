@@ -150,7 +150,7 @@ def main():
             es_agua_por_mes = (
                 palabra == "Agua" and resultado["agua_mes_impar"] and en_verde
             )
-            nota = " (mes impar)" if es_agua_por_mes else ""
+            nota = " (Bimensual)" if es_agua_por_mes else ""
             st.write(f"{emoji} {palabra}{nota}")
 
         st.divider()
