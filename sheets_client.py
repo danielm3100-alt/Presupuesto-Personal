@@ -6,6 +6,7 @@ la lógica de autenticación en el resto del proyecto.
 
 import gspread
 import pandas as pd
+import streamlit as st
 from google.oauth2.service_account import Credentials
 
 import config
@@ -17,10 +18,19 @@ SCOPES = [
 
 
 def conectar():
-    """Crea el cliente autenticado de gspread. Se llama una sola vez por sesión."""
-    creds = Credentials.from_service_account_file(
-        config.RUTA_CREDENCIALES, scopes=SCOPES
-    )
+    """Crea el cliente autenticado de gspread. Se llama una sola vez por sesión.
+
+    En Streamlit Cloud usa las credenciales guardadas en Secrets (bajo la
+    clave 'gcp_service_account'). En tu PC, como no existe ese secreto,
+    usa el archivo local credentials.json.
+    """
+    if "gcp_service_account" in st.secrets:
+        info = dict(st.secrets["gcp_service_account"])
+        creds = Credentials.from_service_account_info(info, scopes=SCOPES)
+    else:
+        creds = Credentials.from_service_account_file(
+            config.RUTA_CREDENCIALES, scopes=SCOPES
+        )
     cliente = gspread.authorize(creds)
     return cliente
 
